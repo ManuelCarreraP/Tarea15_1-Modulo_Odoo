@@ -20,98 +20,162 @@ docker exec -it odoo18_web odoo scaffold MaquinaCafe /mnt/extra-addons
 ## 2º PASO  
 Cuando ya tenemos la estructura de las carpetas creada modificamos el archivo `./addons/maquina_cafe/_manyfest_.py`:
 <br>   
-<img width="1920" height="1047" alt="image" src="https://github.com/user-attachments/assets/260f130c-f074-4fc0-b566-e9648156267e" />
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/b02e5ec0-648f-41e6-ac9a-441b4fb8d7d0" />
+
 
 ```bash
 # -*- coding: utf-8 -*-
 {
-    'name': "MaquinaCafe",
-
-    'summary': "Modulo para calcular cuanto café se necesita según la cantidad de sueño",
-
+    'name': "Maquina Cafe",
+    'summary': "Modulo para calcular café según nivel de sueño",
     'description': """
-        ● 1 a 3 → Café con leche
-        ● 4 a 6 → Café solo largo
-        ● 7 a 9 → Café solo larguísimo
-        ● 10 → Inyección de adrenalina
+        Recomienda bebidas según el nivel de sueño:
+        • 1 a 3 → Café con leche
+        • 4 a 6 → Café solo largo
+        • 7 a 9 → Café solo larguísimo
+        • 10 → Inyección de adrenalina
     """,
-
     'author': "Manuel Carrera",
     'website': "https://www.manuelcarrera.com",
-
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
-    # for the full list
-    'category': 'Uncategorized',
+    'category': 'Tools',
     'version': '0.1',
-
-    # any module necessary for this one to work correctly
     'depends': ['base'],
-
-    # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'views/views.xml',
-        'views/templates.xml',
+        'security/ir.model.access.csv',
+        'views/views.xml'
     ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
-    ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }
 ```
 -------
 
 ## 3º PASO
 Posteriormente tendremos que modificar el archivo `./addons/maquina_cafe/models/models.py` donde añadiremos el código para la funcionalidad de nuestro modulo:  
-<br>
+<br>  
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/08352b99-cc9a-4a2b-9e08-444e8fd9b3f1" />
+
+<br>  
+
 ```bash
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
 
 
-class BebidaSueño(models.Model):
-    _name = 'bebida.sueño'
-    _description = 'Recomendación de Bebida por Sueño'
+class MaquinaCafe(models.Model):
+    _name = 'maquina.cafe'
+    _description = 'Máquina de Café - Recomendación por Sueño'
     _rec_name = 'alumno'
 
     alumno = fields.Char(
         string='Alumno',
         required=True,
-        help='Nombre completo del alumno'
+        help='Nombre del alumno'
     )
 
-    nivel_sueño = fields.Integer(
+    nivel_sueno = fields.Integer(
         string='Nivel de Sueño',
         required=True,
         default=1,
-        help='Nivel de sueño del 1 al 10',
+        help='Nivel de sueño (1-10)',
         min=1,
         max=10
     )
 
     bebida_recomendada = fields.Char(
         string='Bebida Recomendada',
-        compute='_calcular_bebida',
+        compute='_compute_bebida_recomendada',
         store=True,
-        help='Bebida recomendada según el nivel de sueño'
+        readonly=True
     )
 
-    @api.depends('nivel_sueño')
-    def _calcular_bebida(self):
-        for registro in self:
-            sueño = registro.nivel_sueño
+    @api.depends('nivel_sueno')
+    def _compute_bebida_recomendada(self):
+        for record in self:
+            nivel = record.nivel_sueno
 
-            if 1 <= sueño <= 3:
+            if 1 <= nivel <= 3:
                 bebida = 'Café con leche'
-            elif 4 <= sueño <= 6:
+            elif 4 <= nivel <= 6:
                 bebida = 'Café solo largo'
-            elif 7 <= sueño <= 9:
+            elif 7 <= nivel <= 9:
                 bebida = 'Café solo larguísimo'
-            elif sueño == 10:
+            elif nivel == 10:
                 bebida = 'Inyección de adrenalina'
             else:
-                bebida = 'ERROR: Nivel no válido'
+                bebida = 'Nivel no válido'
 
-            registro.bebida_recomendada = bebida
+            record.bebida_recomendada = bebida
+
+    @api.constrains('nivel_sueno')
+    def _check_nivel_sueno(self):
+        for record in self:
+            if record.nivel_sueno < 1 or record.nivel_sueno > 10:
+                raise models.ValidationError('El nivel de sueño debe estar entre 1 y 10')
 ```  
+
+-------
+
+## 4º PASO
+Por último configuraremos el archivo `./addons/maquina_cafe/views/views.xml`, el cual define las vistas de formulario y lista, la acción para abrirlas y el menú en la interfaz:
+<br>  
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/44242584-705f-49a8-949e-5f866bbf9f9b" />
+
+<br>  
+
+```bash
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción -->
+    <record id="action_maquina_cafe" model="ir.actions.act_window">
+        <field name="name">Máquina de Café</field>
+        <field name="res_model">maquina.cafe</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_maquina_cafe_root" name="Máquina de Café"/>
+    <menuitem id="menu_maquina_cafe" name="Registros" parent="menu_maquina_cafe_root" action="action_maquina_cafe"/>
+
+    <!-- Vista lista -->
+    <record id="view_maquina_cafe_list" model="ir.ui.view">
+        <field name="name">maquina.cafe.list</field>
+        <field name="model">maquina.cafe</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="alumno"/>
+                <field name="nivel_sueno" string="Nivel de Sueño"/>
+                <field name="bebida_recomendada"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario SIMPLE -->
+    <record id="view_maquina_cafe_form" model="ir.ui.view">
+        <field name="name">maquina.cafe.form</field>
+        <field name="model">maquina.cafe</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="alumno"/>
+                        <field name="nivel_sueno" string="Nivel de Sueño"/>  
+                        <field name="bebida_recomendada" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
+```
+------
+
+## 5º PASO
+También debemos modificar el archivo `./addons/maquina_cafe/security/ir.model.access.csv`, que define los permisos de acceso a los modelos de datos, especificando qué usuarios pueden leer, escribir, crear o eliminar registros en cada tabla de la base de datos del módulo.  
+<br>  
+
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/a6d1ff01-9b50-40a3-b4ed-5777dff8410c" />
+
+
+
