@@ -179,3 +179,32 @@ También debemos modificar el archivo `./addons/maquina_cafe/security/ir.model.a
 
 
 
+## Comprobación
+**· Para comprobar primero debemos reiniciar el contenedor con el siguiente comando para que se le apliquen los cambios establecidos:**  
+```bash
+docker compose restart web
+```  
+<br>  
+<img width="1046" height="107" alt="image" src="https://github.com/user-attachments/assets/f2dc403f-d178-4c75-bb10-6d0c8f249f44" />
+<br><br>  
+
+**· Ahora abrimos la web de Odoo, y en `Ajustes`, bajamos y activamos la opción de desarrollador:**  
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/9dfab99e-1eab-46fb-b60b-f419f941e4ff" />  
+<br>  
+**· A continuación desde el menú de `Aplicaciones` hacemos click en `Actualizar lista de aplicaciones`:**  
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/75e1d33c-4b9e-430f-a2db-542b833b4f5d" />  
+<br>   
+
+**· Lo siguiente será instalar/activar el modulo que hemos creado, buscandolo por su nombre en la barra de busqueda:**  
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/ab1e368d-26c5-4b34-84ed-d8aaf29224dd" />
+<br>   
+**· Una vez activado se nos abre este menú, en el cual comprobaremos si funciona correctamente:**
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/801fed73-9602-444a-b1b3-080a86bed09f" />
+<br>   
+
+**· Comprobación:**
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/269115cf-2d19-4567-8e09-0d38c5d92c13" />
+<img width="1920" height="1005" alt="image" src="https://github.com/user-attachments/assets/f93b10b3-7661-4221-ac9e-9c5249141973" />
+
+
+
