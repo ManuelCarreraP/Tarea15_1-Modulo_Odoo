@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción -->
+    <record id="action_maquina_cafe" model="ir.actions.act_window">
+        <field name="name">Máquina de Café</field>
+        <field name="res_model">maquina.cafe</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem id="menu_maquina_cafe_root" name="Máquina de Café"/>
+    <menuitem id="menu_maquina_cafe" name="Registros" parent="menu_maquina_cafe_root" action="action_maquina_cafe"/>
+
+    <!-- Vista lista -->
+    <record id="view_maquina_cafe_list" model="ir.ui.view">
+        <field name="name">maquina.cafe.list</field>
+        <field name="model">maquina.cafe</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="alumno"/>
+                <field name="nivel_sueno" string="Nivel de Sueño"/>
+                <field name="bebida_recomendada"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario SIMPLE -->
+    <record id="view_maquina_cafe_form" model="ir.ui.view">
+        <field name="name">maquina.cafe.form</field>
+        <field name="model">maquina.cafe</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="alumno"/>
+                        <field name="nivel_sueno" string="Nivel de Sueño"/>
+                        <field name="bebida_recomendada" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
